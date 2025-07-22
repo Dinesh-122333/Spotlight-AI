@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* options.css */
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 2rem;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e88e5;
+            margin-bottom: 2rem;
+        }
+
+        .form {
+            max-width: 500px;
+            margin: 0 auto 1.5rem auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"] {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #1e88e5;
+            outline: none;
+        }
+        p {
+            max-width: 600px;
+            margin: 1rem auto;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            text-align: center;
+        }
+
+
+        a {
+            color: #1e88e5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button#save-button {
+            display: block;
+            margin: 2rem auto;
+            padding: 0.75rem 1.5rem;
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button#save-button:hover {
+            background-color: #1565c0;
+        }
+
+        .success-message {
+            text-align: center;
+            color: green;
+            font-weight: 500;
+            display: none;
+        }
+
+    </style>
+    <title>Spotlight optional page</title>
+</head>
+<body>
+    <h1>Spotlight Ai</h1>
+    <div class="form">
+        <label for="api-key">API Key</label>
+        <input type="text" id="api-key" placeholder="Enter your API key...">
+    </div>
+
+    <p>You can get an Api key from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></p>
+
+    <button id="save-button">Save Settings</button>
+    <p id="success-message" class="success-message">Settings saved successfully!</p>
+
+    <script src="options.js"></script>
+</body>
+</html>
