@@ -9,6 +9,7 @@ document.getElementById("save-button").addEventListener("click", () => {
     if (!apiKey) return ;
     
     chrome.storage.sync.set({Apikey: apiKey}, () => {
+        console.log("API key saved:", apiKey);
         document.getElementById("success-message").style.display = "block";
         setTimeout(() => window.close(),1000);
     })

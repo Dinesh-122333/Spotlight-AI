@@ -7,8 +7,10 @@ function getData(){
 }
 
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
-    if (req.type === "GET_DATA") {
-      const text = getArticleText();
-      sendResponse({ text });
-    }
-  });
+  if (req.request === "GET_DATA") {
+    console.log("Message received in content script");
+    const article = getData();
+    sendResponse({ text: article });
+    return true; // ✅ Keeps the messaging channel open
+  }
+});
