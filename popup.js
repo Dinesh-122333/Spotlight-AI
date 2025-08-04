@@ -1,3 +1,5 @@
+console.log("✅ content.js loaded on", window.location.href);
+
 document.getElementById("highlight-btn").addEventListener("click", () => {
     chrome.storage.sync.get(['Apikey'], (result) => {
         if (!result.Apikey) {
@@ -33,7 +35,10 @@ document.getElementById("highlight-btn").addEventListener("click", () => {
 });
 async function sendtoApi(data, apiKey, tabId) {
     try {
-      const prompt = `Analyze the following structured content and assign importance levels:\n\n${JSON.stringify(data, null, 2)}`;
+      const prompt = `Analyze the following structured content and assign importance levels in table format(like this = | Importance Level | Title/Subheading | Content Description | Tag | Position Range |
+|---|---|---|---|---|
+| **High** | WTF is JSX | Concise introduction to JSX and its advantages over templates. | h1, p | 0-2 |
+| **Medium** | The Pragma | Explains the role of the pragma in JSX transpilation. | h2, p | 3-5 |):\n\n${JSON.stringify(data, null, 2)}`;
   
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: "POST",
