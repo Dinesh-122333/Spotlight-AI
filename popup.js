@@ -1,24 +1,71 @@
 document.getElementById("highlight-btn").addEventListener("click", () => {
-    // var dataToggle = document.getElementById("data-toggle").checked;
-    // var quoteToggle = document.getElementById("quote-toggle").checked;
-    // var verbToggle = document.getElementById("verb-toggle").checked;
-    // var emotionToggle = document.getElementById("emotion-toggle").checked;
-    // const note = document.getElementById
-
     chrome.storage.sync.get(['Apikey'], (result) => {
         if (!result.Apikey) {
             console.log("API key not found...");
             return;
         }
-    
+
+        // ✅ Get the active tab first
         chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
-            chrome.runtime.sendMessage({ request: "GET_DATA" }, res => console.log(res));
-            chrome.tabs.sendMessage(tab.id, { request: "GET_DATA" }, (res) => {
-                console.log("Response from content script:", res);
+            if (!tab || !tab.id) {
+                console.error("No active tab found.");
+                return;
+            }
+
+            // ✅ Now send message to content script
+            chrome.tabs.sendMessage(tab.id, { type: "GET_DATA" }, (res) => {
+                if (chrome.runtime.lastError) {
+                    console.error("Error sending message:", chrome.runtime.lastError.message);
+                    return;
+                }
+
+                console.log("The response from the content.js is: ", res);
+                if (res && res.structuredData) {
+                    console.log(res.structuredData);
+                    var data = sendtoApi(res.structuredData, result.Apikey, tab.id);
+                } else {
+                    console.warn("No text received from content script.");
+                }
             });
+            
         });
     });
-    
+});
+async function sendtoApi(data, apiKey, tabId) {
+    try {
+      const prompt = `Analyze the following structured content and assign importance levels:\n\n${JSON.stringify(data, null, 2)}`;
+  
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ]
+        })
+      });
+  
+      const result = await response.json();
+      console.log("API response:", result);
+      const resultText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+      console.log("Extracted text: ",resultText);
 
-
-})
+      console.log("going to annotation page");
+      
+      chrome.tabs.sendMessage(tabId, {
+        type: "ANNOTATE_PAGE",
+        resultText: resultText
+      });
+      
+    } catch (error) {
+      console.error("Error sending data to API:", error);
+    }
+  }
