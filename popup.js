@@ -1,6 +1,11 @@
 console.log("✅ content.js loaded on", window.location.href);
 
 document.getElementById("highlight-btn").addEventListener("click", () => {
+
+    const checklist = {
+      videoimgRemove: document.getElementById("videoimgRemove").checked,
+      adsRemove: document.getElementById("adsRemove").checked
+    };
     chrome.storage.sync.get(['Apikey'], (result) => {
         if (!result.Apikey) {
             console.log("API key not found...");
@@ -29,6 +34,27 @@ document.getElementById("highlight-btn").addEventListener("click", () => {
                     console.warn("No text received from content script.");
                 }
             });
+
+            if (checklist.videoimgRemove){
+              chrome.tabs.sendMessage(tab.id, {type: "Remove-video"}, (res) => {
+                if (chrome.runtime.lastError) {
+                  console.error("Error sending message:", chrome.runtime.lastError.message);
+                  return;
+              }
+
+              console.log("The response from the content.js is: ", res);
+              })
+            }
+            if (checklist.adsRemove){
+              chrome.tabs.sendMessage(tab.id, {type: "Remove-adds"}, (res) => {
+                if (chrome.runtime.lastError) {
+                  console.error("Error sending message:", chrome.runtime.lastError.message);
+                  return;
+              }
+
+              console.log("The response from the content.js is: ", res);
+              })
+            }
             
         });
     });
